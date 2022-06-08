@@ -1,57 +1,55 @@
 window.addEventListener("DOMContentLoaded", () => {
     function req() {
-        const request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:3000/people");
-        request.setRequestHeader("Contenc-type", "application/json; charset=utf-8");
-        request.send();
+        // использование XMLHttpRequest
+        // const request = new XMLHttpRequest();
+        // request.open("GET", "http://localhost:3000/people");
+        // request.setRequestHeader("Contenc-type", "application/json; charset=utf-8");
+        // request.send();
 
-        request.addEventListener("load", function() {
-            if (request.readyState === 4 && request.status == 200) {
-                let data = JSON.parse(request.response);
-                console.log(data)
-                console.log('AllGoesRight')
+        // request.addEventListener("load", function() {
+        //     if (request.readyState === 4 && request.status == 200) {
+        //         let data = JSON.parse(request.response);
+        //         console.log(data)
+        //         loadImage(data);
+        //     } else {
+        //         console.error("Что-то пошло не так!")
+        //     }
+        // });
 
-                let btn = document.querySelector('.btn1');
-                btn.addEventListener("click", function() {
-                    data.forEach(element => {
-                        let card = document.createElement('div');
+        // использование Fetch
+        // getResource("http://localhost:3000/people")
+        //     .then(data => loadImage(data))
+        //     .catch(error => console.error(error))
 
-                        card.classList.add('card');
+        // this.remove();
 
-                        let icon, alter;
+        // async function getResource(url) {
+        //     const res = await fetch(`${url}`)
+        //     if (!res.ok) {
+        //         throw new Error(`Could not fetch ${url}, status: ${res.status}`)
+        //     }
 
-                        if (element.sex == 'male') {
-                            icon = "icons/mars.png"
-                            alter = "male"
-                        } else {
-                            icon = "icons/female.png"
-                            alter = "female"
-                        }
+        //     return await res.json();
+        // }
 
-                        card.innerHTML = `<img src="${element.photo}" alt="photo"></img>  
-                        <div class="name">${element.name} ${element.surname}</div>
-                        <div class="sex">
-                            <img src=${icon} alt=${alter}></img>    
-                        </div>   
-                        <div class="age">
-                            ${element.age}    
-                        </div>`;
-                        document.querySelector('.app').appendChild(card);
+        // использование axios, вместо fetch() используем axios, он делает тоже самое только возвращает уже преобразованный в json данные, только возвращает больше элементов(в том числе конфиг, заголовки и т.д.)
+        getResource("http://localhost:3000/people")
+            .then(data => loadImage(data.data))
+            .catch(error => console.error(error))
 
-                    });
-                    this.remove();
-                })
+        this.remove();
 
-            } else {
-
-                console.error("Что-то пошло не так!")
+        async function getResource(url) {
+            const res = await axios(`${url}`)
+            if (res.status !== 200) {
+                throw new Error(`Could not fetch ${url}, status: ${res.status}`)
             }
 
+            return await res;
+        }
 
-        });
-        this.remove();
     }
 
-    let btn2 = document.querySelector('.btn2');
+    let btn2 = document.querySelector('.button');
     btn2.addEventListener("click", req, { "once": true });
 });
